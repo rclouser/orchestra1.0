@@ -16,7 +16,8 @@
 #
 ###########################################################################
 
-from hooks.dbm_hook import DV360Hook
+##from hooks.dbm_hook import DV360Hook
+from hooks.dv360_hook import DV360Hook
 from airflow import models
 
 
@@ -36,7 +37,8 @@ class DV360RunQueryOperator(models.BaseOperator):
 
   def execute(self, context):
     if(self.service == None):
-      hook = DV360Hook(dbm_conn_id=self.conn_id)
+      ##hook = DV360Hook(dbm_conn_id=self.conn_id)
+      hook = DV360Hook(dv360_conn_id=self.conn_id)
       self.service = hook.get_service()
 
     request = self.service.queries().runquery(queryId=self.query_id, body={})
