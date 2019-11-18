@@ -3,16 +3,8 @@
 		"partner_id": ["advertiser_id1", "advertiser_id2"]
 	},
 	"sdf_api_version": 4.2,
-	"gce_zone": "us-central1",
-	"gcs_bucket": "gs://us-central1-spindle-v2-orch-a203b49a-bucket",
-	"cloud_project_id": "practice-tools-245512",
-	"erf_bq_dataset": "automated_erfs_new_repo",
-	"partner_ids": "",
-	"number_of_advertisers_per_sdf_api_call": 1,
 	"private_entity_types": "Partner, Advertiser, InsertionOrder, LineItem, Creative, Pixel, InventorySource, UserList, UniversalChannel, summary",
-	"sdf_bq_dataset": "new_repo_structured_data_files",
 	"sdf_file_types": "LINE_ITEM,AD_GROUP,AD,INSERTION_ORDER,CAMPAIGN",
-	"sequential_erf_dag_name": "new_repo_erf",
 	"dv360_sdf_advertisers_report_id":"",
 	"dv360_report_body":{
 		"kind": "doubleclickbidmanager#query",
