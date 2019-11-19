@@ -3,7 +3,7 @@
 		"partner_id": ["advertiser_id1", "advertiser_id2"]
 	},
 	"sdf_api_version": 4.2,
-	"private_entity_types": "Partner, Advertiser, InsertionOrder, LineItem, Creative, Pixel, InventorySource, UserList, UniversalChannel, summary",
+	"private_entity_types": "Partner,Advertiser,InsertionOrder,LineItem,Creative,Pixel,InventorySource,UserList,UniversalChannel",
 	"sdf_file_types": "LINE_ITEM,AD_GROUP,AD,INSERTION_ORDER,CAMPAIGN",
 	"dv360_sdf_advertisers_report_id":"",
 	"dv360_report_body":{
