@@ -23,7 +23,7 @@ from datetime import timedelta
 from airflow import DAG
 from airflow import models
 from schema import Entity_Schema_Lookup
-from dv360_multi_file_upload_erf import DV360MultiERFUploadBqOperator
+from operators.dv360.dv360_multi_file_upload_erf import DV360MultiERFUploadBqOperator
 
 def yesterday():
   return datetime.today() - timedelta(days=1)
