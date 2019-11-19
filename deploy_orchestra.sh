@@ -82,6 +82,7 @@ bq --location=$COMPOSER_LOCATION mk --dataset $BQ_SDF_DATASET
 bq --location=$COMPOSER_LOCATION mk --dataset $BQ_ERF_DATASET
 
 echo "$(date)-Creating custom orchestra variables in  Airflow ..."
+ERF_DAG_NAME=${COMPOSER_NAME//[-]/_}'_sequential_erf_dag'
 gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s sdf_bq_dataset $BQ_SDF_DATASET
 gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s erf_bq_dataset $BQ_ERF_DATASET
 gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s gce_zone $COMPOSER_LOCATION
@@ -89,6 +90,7 @@ gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION va
 gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s cloud_project_id $PROJECT_ID
 gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s partner_ids $PARTNER_STRING
 gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s number_of_advertisers_per_sdf_api_call $PARTNER_COUNT
+gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s sequential_erf_dag_name $ERF_DAG_NAME
 
 echo "$(date)-Copying Orchestra repo from $ORCHESTRA_SRC_BUCKET to $COMPOSER_BUCKET ..."
 gsutil -m cp -r $ORCHESTRA_SRC_BUCKET $COMPOSER_BUCKET
