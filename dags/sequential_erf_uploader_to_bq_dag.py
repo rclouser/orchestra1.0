@@ -82,7 +82,8 @@ def create_tasks(dag, file_creation_date, gcs_bucket, bq_dataset, cloud_project_
       tasks.append(multi)
   return tasks
 
-tasks = create_tasks(dag, file_creation_date, gcs_bucket, bq_table, cloud_project_id, conn_id)
+##tasks = create_tasks(dag, file_creation_date, gcs_bucket, bq_table, cloud_project_id, conn_id) ##function requires bq_dataset
+tasks = create_tasks(dag, file_creation_date, gcs_bucket, bq_dataset, cloud_project_id, conn_id)
 
 for i, task in enumerate(tasks[1:-1]):
   task << tasks[i]
