@@ -18,7 +18,7 @@
 			"params": {
 				"type": "TYPE_GENERAL",
 				"groupBys": [ "FILTER_ADVERTISER", "FILTER_INSERTION_ORDER" ],
-				"filters": [ { "type": "FILTER_PARTNER", "value": "466317" } ],
+				"filters": [ { "type": "FILTER_PARTNER", "value": "99999999" } ],
 				"metrics": [ "METRIC_IMPRESSIONS", "METRIC_CLICKS" ],
 				"includeInviteData": true
 								},

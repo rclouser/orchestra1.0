@@ -53,12 +53,10 @@ then
     exit 1
 fi
 
-echo "Deployment starting..."
-
 echo "Enabling APIs..."
 gcloud services enable composer.googleapis.com
 
-echo "Building Composer Environment. This can take approximately 20 minutes..."
+echo "$(date)-Building Composer Environment. This can take approximately 20 minutes..."
 gcloud composer environments create $COMPOSER_NAME \
     --location $COMPOSER_LOCATION \
     --zone $COMPOSER_ZONE \
@@ -73,28 +71,29 @@ COMPOSER_BUCKET=`dirname $COMPOSER_DAG_LOCATION`
 echo "Composer Bucket: $COMPOSER_BUCKET"
 echo "Dag Folder: $COMPOSER_DAG_LOCATION"
 
-echo "Creating standard orchestra variables in Airflow from orchestra_vars.json...."
-gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --i /home/airflow/gcs/data/orchestra_vars.json
 
-echo "Creating BigQuery Datasets"
-BQ_SDF_DATASET=$COMPOSER_NAME'-sdf'
-BQ_ERF_DATASET=$COMPOSER_NAME'-erf'
+echo "$(date)-Creating BigQuery Datasets"
+BQ_SDF_DATASET=${COMPOSER_NAME//[-]/_}'_sdf'
+BQ_ERF_DATASET=${COMPOSER_NAME//[-]/_}'_erf'
 echo "SDF dataset: $BQ_SDF_DATASET"
 echo "ERF dataset: $BQ_ERF_DATASET"
 
 bq --location=$COMPOSER_LOCATION mk --dataset $BQ_SDF_DATASET
 bq --location=$COMPOSER_LOCATION mk --dataset $BQ_ERF_DATASET
 
-echo "Creating custom orchestra variables in  Airflow ..."
-gcloud composer environments run test-deploy-3 --location=us-east1 variables -- --s sdf_bq_dataset $BQ_SDF_DATASET
-gcloud composer environments run test-deploy-3 --location=us-east1 variables -- --s erf_bq_dataset $BQ_ERF_DATASET
-gcloud composer environments run test-deploy-3 --location=us-east1 variables -- --s gce_zone $COMPOSER_LOCATION
-gcloud composer environments run test-deploy-3 --location=us-east1 variables -- --s gcs_bucket $COMPOSER_BUCKET
-gcloud composer environments run test-deploy-3 --location=us-east1 variables -- --s cloud_project_id $PROJECT_ID
-gcloud composer environments run test-deploy-3 --location=us-east1 variables -- --s partner_ids $PARTNER_STRING
-gcloud composer environments run test-deploy-3 --location=us-east1 variables -- --s number_of_advertisers_per_sdf_api_call $PARTNER_COUNT
+echo "$(date)-Creating custom orchestra variables in  Airflow ..."
+gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s sdf_bq_dataset $BQ_SDF_DATASET
+gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s erf_bq_dataset $BQ_ERF_DATASET
+gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s gce_zone $COMPOSER_LOCATION
+gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s gcs_bucket ${COMPOSER_BUCKET//'gs://'}
+gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s cloud_project_id $PROJECT_ID
+gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s partner_ids $PARTNER_STRING
+gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --s number_of_advertisers_per_sdf_api_call $PARTNER_COUNT
 
-echo "Copying Orchestra repo from $ORCHESTRA_SRC_BUCKET to $COMPOSER_BUCKET ..."
+echo "$(date)-Copying Orchestra repo from $ORCHESTRA_SRC_BUCKET to $COMPOSER_BUCKET ..."
 gsutil -m cp -r $ORCHESTRA_SRC_BUCKET $COMPOSER_BUCKET
 
-echo "Composer and Orchestra setup complete"
+echo "$(date)-Creating standard orchestra variables in Airflow from orchestra_vars.json...."
+gcloud composer environments run $COMPOSER_NAME --location=$COMPOSER_LOCATION variables -- --i /home/airflow/gcs/data/orchestra_vars.json
+
+echo "$(date)-Composer and Orchestra setup complete"
