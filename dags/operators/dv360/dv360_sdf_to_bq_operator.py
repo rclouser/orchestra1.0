@@ -110,7 +110,7 @@ class DV360SDFToBQOperator(models.BaseOperator):
         filename = '%d_%s_%s_%s.json' % (time.time() * 1e+9, randint(
             1, 1000000), response_key, 'sdf')
         gcs_hook.upload(self.gcs_bucket, filename, temp_file.name)
-        logger.info('SDF upload to GCS complete')
+        logger.info('***SDF upload to GCS complete filename: %s', filename)
       finally:
         if temp_file:
           temp_file.close()

@@ -503,12 +503,13 @@ class BigQueryBaseCursor(object):
             .insert(projectId=self.project_id, body=job_data) \
             .execute()
         job_id = query_reply['jobReference']['jobId']
-
+        logging.info('***Query job executed : %s, %s', self.project_id, job_id)
         # Wait for query to finish.
         keep_polling_job = True
         while (keep_polling_job):
             try:
                 job = jobs.get(projectId=self.project_id, jobId=job_id).execute()
+                logging.info('Polling job: %s, %s', self.project_id, job_id)
                 if (job['status']['state'] == 'DONE'):
                     keep_polling_job = False
                     # Check if job had errors.
@@ -528,7 +529,7 @@ class BigQueryBaseCursor(object):
                     time.sleep(5)
                 else:
                     raise Exception(
-                        'BigQuery job status check failed. Final error was: %s', err.resp.status)
+                        'BigQuery job status check failed. Final error was: {}'.format(err.resp.status))
 
         return job_id
 
