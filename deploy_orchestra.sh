@@ -31,7 +31,7 @@ then
 fi
 
 PROJECT=$GOOGLE_CLOUD_PROJECT
-PROJECT_ID=$(gcloud projects list --filter="$GOOGLE_CLOUD_PROJECT" --format="value(PROJECT_NUMBER)")
+PROJECT_ID=$(gcloud projects list --filter="$GOOGLE_CLOUD_PROJECT" --format="value(PROJECT_ID)")
 
 ##convert string to array
 IFS=', ' read -r -a PARTNER_IDS <<< "$PARTNER_STRING"
