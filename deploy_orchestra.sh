@@ -1,12 +1,19 @@
-ORCHESTRA_SRC_BUCKET='gs://orchestra-practice-tools-245512/*'
-
 echo "Please provide the following:"
+read -p "Please enter 'dev' or 'prod' for the enivironment type (default prod): " ENVIRONMENT_TYPE
 read -p "Please enter name for the composer environment: " COMPOSER_NAME
 read -p "Please enter composer location: " COMPOSER_LOCATION
 read -p "Please enter composer zone: " COMPOSER_ZONE
 read -p "Please enter partner id(s) comma seperated: " PARTNER_STRING
 
-if [ -z "$" ]
+if [ "$ENVIRONMENT_TYPE" == "dev" ]
+then
+        ORCHESTRA_SRC_BUCKET='gs://dev-orchestra-practice-tools-245512/*'
+else
+        ORCHESTRA_SRC_BUCKET='gs://orchestra-practice-tools-245512/*'
+        ENVIRONMENT_TYPE='prod'
+fi
+
+if [ -z "$COMPOSER_NAME" ]
 then
       echo "\$COMPOSER_NAME is empty"
       exit 1
@@ -38,6 +45,7 @@ IFS=', ' read -r -a PARTNER_IDS <<< "$PARTNER_STRING"
 PARTNER_COUNT=${#PARTNER_IDS[@]}
 
 
+echo "Environment Type: $ENVIRONMENT_TYPE"
 echo "Name: $COMPOSER_NAME"
 echo "Location: $COMPOSER_LOCATION"
 echo "Zone: $COMPOSER_ZONE"
