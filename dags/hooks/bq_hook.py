@@ -531,7 +531,7 @@ class BigQueryBaseCursor(object):
                     time.sleep(5)
                 else:
                     raise Exception(
-                        'BigQuery job status check failed. Final error was: {} - {} - {}'.format(err.resp.status,err.resp.reason,err.resp.uri))
+                        'BigQuery job status check failed. Final error was: {} - {} '.format(err.resp.status,err.resp.reason))
 
         return job_id
 
