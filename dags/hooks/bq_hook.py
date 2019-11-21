@@ -504,7 +504,6 @@ class BigQueryBaseCursor(object):
             .execute()
         job_id = query_reply['jobReference']['jobId']
         logging.info('***Query job executed : %s, %s', self.project_id, job_id)
-        logging.info('******Job Status: %s', job['status']['state'])
         # Wait for query to finish.
         keep_polling_job = True
         while (keep_polling_job):
@@ -512,6 +511,7 @@ class BigQueryBaseCursor(object):
             try:
                 job = jobs.get(projectId=self.project_id, jobId=job_id).execute()
                 logging.info('******Polling job: %s, %s', self.project_id, job_id)
+                logging.info('******Job Status: %s', job['status']['state'])
                 if (job['status']['state'] == 'DONE'):
                     keep_polling_job = False
                     # Check if job had errors.
