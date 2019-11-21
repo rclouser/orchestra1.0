@@ -511,8 +511,7 @@ class BigQueryBaseCursor(object):
             logging.info('***Polling job : %s, %s', self.project_id, job_id)
             try:
                 job = jobs.get(projectId=self.project_id, jobId=job_id).execute()
-                logging.info('Polling job: %s, %s', self.project_id, job_id)
-                logging.info('******Job Status: %s', job['status']['state'])
+                logging.info('******Polling job: %s, %s', self.project_id, job_id)
                 if (job['status']['state'] == 'DONE'):
                     keep_polling_job = False
                     # Check if job had errors.
