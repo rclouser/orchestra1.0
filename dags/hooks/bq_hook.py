@@ -504,9 +504,11 @@ class BigQueryBaseCursor(object):
             .execute()
         job_id = query_reply['jobReference']['jobId']
         logging.info('***Query job executed : %s, %s', self.project_id, job_id)
+        logging.info('******Job Status: %s', job['status']['state'])
         # Wait for query to finish.
         keep_polling_job = True
         while (keep_polling_job):
+            logging.info('***Polling job : %s, %s', self.project_id, job_id)
             try:
                 job = jobs.get(projectId=self.project_id, jobId=job_id).execute()
                 logging.info('Polling job: %s, %s', self.project_id, job_id)
@@ -530,7 +532,7 @@ class BigQueryBaseCursor(object):
                     time.sleep(5)
                 else:
                     raise Exception(
-                        'BigQuery job status check failed. Final error was: {}'.format(err.resp.status))
+                        'BigQuery job status check failed. Final error was: {} Message was {}'.format(err.resp.status,err.resp.message))
 
         return job_id
 
