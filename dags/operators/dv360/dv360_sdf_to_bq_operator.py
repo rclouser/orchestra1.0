@@ -115,7 +115,6 @@ class DV360SDFToBQOperator(models.BaseOperator):
             logger.info('***SDF upload to GCS complete filename: %s to bucket: %s', filename,self.gcs_bucket)
         else:
             logger.warning('********File: %s was not succesfully loaded to bucket: %s', filename,self.gcs_bucket)
-
       finally:
         if temp_file:
           temp_file.close()
@@ -138,7 +137,7 @@ class DV360SDFToBQOperator(models.BaseOperator):
             skip_leading_rows=1,
             write_disposition=self.write_disposition)
       finally:
-        ##keep getting 404 errors from the delete. Going to check if file exists before trying
+        ##keep getting 404 errors from somewhere. Going to check if file exists before trying to delete
         if gcs_hook.exists(self.gcs_bucket, filename):
             logger.info('Deleting SDF from GCS from bucket: %s for file: %s',self.gcs_bucket, filename)
             ##gcs_hook.delete(self.gcs_bucket, filename)
