@@ -109,8 +109,13 @@ class DV360SDFToBQOperator(models.BaseOperator):
         temp_file.close()
         filename = '%d_%s_%s_%s.json' % (time.time() * 1e+9, randint(
             1, 1000000), response_key, 'sdf')
+        logger.info('***Loading SDF file to GCS filename: %s to bucket: %s', filename,self.gcs_bucket)
         gcs_hook.upload(self.gcs_bucket, filename, temp_file.name)
-        logger.info('***SDF upload to GCS complete filename: %s', filename)
+        if gcs_hook.exists(self.gcs_bucket, filename):
+            logger.info('***SDF upload to GCS complete filename: %s to bucket: %s', filename,self.gcs_bucket)
+        else:
+            logger.warning('********File: %s was not succesfully loaded to bucket: %s', filename,self.gcs_bucket) 
+
       finally:
         if temp_file:
           temp_file.close()
@@ -133,5 +138,5 @@ class DV360SDFToBQOperator(models.BaseOperator):
             skip_leading_rows=1,
             write_disposition=self.write_disposition)
       finally:
-        logger.info('Deleting SDF from GCS')
+        logger.info('Deleting SDF from GCS from bucket: %s for file: %s',self.gcs_bucket, filename)
         gcs_hook.delete(self.gcs_bucket, filename)
