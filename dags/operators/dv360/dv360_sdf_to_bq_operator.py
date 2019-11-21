@@ -127,6 +127,7 @@ class DV360SDFToBQOperator(models.BaseOperator):
       bq_table = self.table_names.get(file_type)
       bq_table = '%s.%s' % (self.bq_dataset, bq_table)
       schema = SDF_VERSIONED_SCHEMA_TYPES.get(self.api_version).get(file_type)
+      logger.info('****bq_table is: %s and schema is: %s',bq_table,schema)
       try:
         bq_base_cursor = BigQueryBaseCursor(self.service, self.cloud_project_id)
         logger.info('Uploading SDF to BigQuery')
