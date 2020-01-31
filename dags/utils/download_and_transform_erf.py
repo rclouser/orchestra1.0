@@ -21,7 +21,7 @@ from hooks.gcs_hook import GoogleCloudStorageHook
 
 
 
-def json_to_jsonlines(json_file):
+def json_to_jsonlines(json_file, temp):
   """Naive Implentation for json to jsonlines.
 
   Args:
@@ -29,20 +29,19 @@ def json_to_jsonlines(json_file):
   Returns:
     The input json file as new line delimited json.
   """
-  with open(json_file) as f:
-    data = json.load(f)
-  return '\n'.join([json.dumps(d) for d in data])
 
+  bashCommand = "cat %s| jq -cn --stream 'fromstream(1|truncate_stream(inputs))'   > %s" % (json_file, temp)
+  import subprocess
+  process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+  output, error = process.communicate()
+  return
 
 def download_and_transform_erf(self, partner_id=None):
   """Load and Transform ERF files to Newline Delimeted JSON.
-
   Then upload this file to the project GCS.
-
   Args:
     self: The operator this is being used in.
     partner_id: A string of the DCM id of the partner.
-
   Returns:
     entity_read_file_ndj: The filename for the converted entity read file.
   """
@@ -51,7 +50,7 @@ def download_and_transform_erf(self, partner_id=None):
   else:
     self.erf_bucket = 'gdbm-public'
 
-  gcs_hook = GoogleCloudStorageHook(google_cloud_storage_conn_id=self.conn_id)
+  gcs_hook = GoogleCloudStorageHook(google_cloud_storage_conn_id=self.gcp_conn_id)
   entity_read_file = tempfile.NamedTemporaryFile(delete=False)
   gcs_hook.download(self.erf_bucket, self.erf_object, entity_read_file.name)
   temp_file = None
@@ -61,7 +60,7 @@ def download_and_transform_erf(self, partner_id=None):
   # https://docs.python.org/2/library/tempfile.html#tempfile.NamedTemporaryFile
   try:
     temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False)
-    temp_file.writelines(json_to_jsonlines(entity_read_file.name))
+    json_to_jsonlines(entity_read_file.name, tempfile.name)
     temp_file.close()
     # Random here used as a nonce for writing multiple files at once.
     filename = '%s_%s_%d.json' % (randint(1, 1000000), self.entity_type,

@@ -18,8 +18,8 @@
 
 import logging
 from airflow import models
-from hooks.bq_hook import BigQueryBaseCursor
-from hooks.bq_hook import BigQueryHook
+from airflow.contrib.hooks.bigquery_hook import BigQueryBaseCursor
+from airflow.contrib.hooks.bigquery_hook import BigQueryHook
 from utils.download_and_transform_erf import download_and_transform_erf
 from hooks.gcs_hook import GoogleCloudStorageHook
 
@@ -74,7 +74,9 @@ class DV360MultiERFUploadBqOperator(models.BaseOperator):
       bq_base_cursor = BigQueryBaseCursor(self.service, self.cloud_project_id)
       bq_base_cursor.run_load(
           self.bq_table,
-          self.schema, [entity_read_file_ndj],
+          [entity_read_file_ndj],
+          schema_fields=self.schema,
           source_format='NEWLINE_DELIMITED_JSON',
-          write_disposition=write_disposition)
+          write_disposition=write_disposition,
+          ignore_unknown_values=True)
       gcs_hook.delete(self.gcs_bucket, filename)
