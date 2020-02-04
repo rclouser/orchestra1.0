@@ -25,6 +25,8 @@ from airflow import models
 from schema import Entity_Schema_Lookup
 from operators.dv360.dv360_multi_file_upload_erf import DV360MultiERFUploadBqOperator
 
+import logging
+
 def yesterday():
   return datetime.today() - timedelta(days=1)
 
@@ -54,10 +56,13 @@ file_creation_date = file_creation_date.strftime('%Y%m%d')
 dag = DAG(
     'multi_erf_to_bq', default_args=default_args, schedule_interval=timedelta(1))
 
+logging.info('****----> : multiple_part_erf_upload_bq_dag file triggered')
 
 for entity_type in private_entity_types:
   schema = Entity_Schema_Lookup[entity_type]
   local_bq_table = '%s.%s' % (bq_dataset, entity_type)
+
+  logging.info('****----> : task_id - multi_%s_to_bq, bq_table: %s, gcs bucket: %s', entity_type, local_bq_table, gcs_bucket)
 
   task_id = 'multi_%s_to_bq' % (entity_type)
   multi = DV360MultiERFUploadBqOperator(
